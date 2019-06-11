@@ -1,0 +1,4 @@
+node_modules
+.env
+/movies-data.json
+/movies-data-small.json
