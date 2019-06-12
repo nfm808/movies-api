@@ -1,3 +1,3 @@
 module.exports = CONFIG = {
-  PORT: 8000
+  PORT: 8000,
 };

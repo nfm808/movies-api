@@ -35,7 +35,7 @@ app.use(function validateBearerToken(req, res, next){
   
   // this uses req.get() to access the value from the key
   // in the headers submitted
-  const bearerToken = req.get('Authorization').split(' ')[1];
+  const bearerToken = req.get('Authorization') ? req.get('Authorization').split(' ')[1] : false;
   const apiToken = process.env.API_TOKEN;
   if(!bearerToken || bearerToken !== apiToken) {
     return res.status(401).send('401: Unauthorized Request');
@@ -74,9 +74,9 @@ function handleGetMovie(req, res) {
 
     // set response to the store filtered and matched
     // to the query
-    response = response.filter(movie => {
+    response = response.filter(movie => 
       movie.genres.toLowerCase() === genresL
-    });
+    );
   }
 
   // logic for if query includes country
@@ -92,7 +92,7 @@ function handleGetMovie(req, res) {
 
   // logic for if vote req is included
   if(avg_vote) {
-
+    
     // parseFloat is a bit slower because it searches for 
     // first appearance of a number in a string, while the 
     // Number constuctor creates a new number instance 
@@ -104,9 +104,9 @@ function handleGetMovie(req, res) {
 
     // filter the response by a number 
     // greater than or equal to the query
-    response = response.filter(movie => {
+    response = response.filter(movie => 
       Number(movie.avg_vote) >= avg_voteF
-    });
+    );
   }
   
   // return the response after any filtering
