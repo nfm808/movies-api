@@ -2,6 +2,8 @@ const app = require('../app');
 const expect = require('chai').expect;
 const request = require('supertest');
 
+// for testing purposes only would change access
+// token for deployment after testing
 const header = { "Authorization": `Bearer b1b92824-8c99-11e9-bc42-526af7764f64` };
 
 describe('GET /movie endpoint', () => {
