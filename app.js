@@ -23,6 +23,8 @@ const helmet = require('helmet');
 // application
 const STORE = require('./movies-data-small.json');
 
+const { formatString } = require('./helpers');
+
 // enable express
 const app = express();
 
@@ -55,27 +57,22 @@ app.use(helmet());
 function handleGetMovie(req, res) {
 
   // destructuring the query 
-  // for some reason when genres is declared as
-  // plural the query can be a genre to work
-  // however, if declared as singular genre only
-  // the param of plural genres works on the req
-  // weird bug
-  const { genres, country, avg_vote } = req.query;
+  const { genre, country, avg_vote } = req.query;
 
   // setting the response to the database(json for 
   // this example)
   let response = STORE;
 
-  // if query includes genres
-  if(genres) {
+  // if query includes genre
+  if(genre) {
 
     // make query lowercase
-    const genresL = genres.toLowerCase();
+    const genreL = genre.toLowerCase();
 
     // set response to the store filtered and matched
     // to the query
     response = response.filter(movie => 
-      movie.genres.toLowerCase() === genresL
+      movie.genre.toLowerCase() === genreL
     );
   }
 
@@ -84,10 +81,10 @@ function handleGetMovie(req, res) {
     
     // format the country by splitting and normalizing
     // the string to be useful in filter
-    const countryL = country.toLowerCase().split('_').join('');
+    const countryL = formatString(country);
 
     // filter the response object by the country
-    response = response.filter(movie => movie.country.toLowerCase().split(' ').join('') === countryL);
+    response = response.filter(movie => formatString(movie.country) === countryL);
   }
 
   // logic for if vote req is included
