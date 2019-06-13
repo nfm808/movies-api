@@ -13,7 +13,7 @@ const morgan = require('morgan');
 // imports a package to help with overcoming cors 
 // restrictions *  need to follow up if this is only
 // to be saved for development or for production
-const cors = require('cors');
+// const cors = require('cors');
 
 // package to implement protecting our server from 
 // malicious intent
@@ -29,7 +29,8 @@ const { formatString } = require('./helpers');
 const app = express();
 
 // use morgan in 'dev' mode
-app.use(morgan('dev'));
+const morganSettings = process.env.NODE_ENV === 'production' ? 'tiny' : 'common';
+app.use(morgan(morganSettings));
 
 // this validates our requests and requires users of 
 // endpoint to present validation against our own token
@@ -46,7 +47,7 @@ app.use(function validateBearerToken(req, res, next){
 })
 
 // use the cors package
-app.use(cors());
+// app.use(cors());
 
 // use the helmet package
 app.use(helmet());
@@ -113,6 +114,16 @@ function handleGetMovie(req, res) {
 // creates the /movie endpoint and assigns
 // sends the logic to the handleGetMovie function
 app.get('/movie', handleGetMovie);
+
+app.use((error, req, res, next) => {
+  let response
+  if (process.env.NODE_ENV === 'production') {
+    response = { error: { message: 'server error'} }
+  } else {
+    response = { error }
+  }
+  res.status(500).json(response)
+});
 
 // exports the app to be imported by server
 module.exports = app;
